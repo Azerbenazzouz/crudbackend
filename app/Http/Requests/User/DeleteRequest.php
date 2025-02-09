@@ -24,7 +24,7 @@ class DeleteRequest extends BaseRequest {
 
     public function withValidator($validator) {
         $validator->after(function ($validator) {
-            $user = $this->userRepository->findByld($this->route('user'));
+            $user = $this->userRepository->findById($this->route('user'));
             if (!$user) {
                 $validator->errors()->add('user', 'User not found');
             }

@@ -13,7 +13,6 @@ class CreateModuleRequest extends BaseRequest {
     public function rules(): array {
         return [
             'model' => 'required|regex:/^[a-z]+$/', // example: 'user' 
-            'publish' => 'required|gt:0' 
         ];
     }
 }

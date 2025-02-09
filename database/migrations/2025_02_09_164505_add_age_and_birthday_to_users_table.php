@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->tinyInteger('publish')->default(2);
             $table->date('birthday')->nullable();
             $table->integer('age')->nullable();
         });

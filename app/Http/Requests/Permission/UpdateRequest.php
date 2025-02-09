@@ -13,7 +13,6 @@ class UpdateRequest extends BaseRequest {
     public function rules(): array {
         return [
             'name' => 'regex:/^[a-z]+:[a-zA-Z]+$/|unique:permissions|nullable',
-            'publish' => 'gt:0|nullable'
         ];
     }
 }

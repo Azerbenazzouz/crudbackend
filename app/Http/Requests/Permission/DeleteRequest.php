@@ -24,7 +24,7 @@ class DeleteRequest extends BaseRequest {
 
     public function withValidator($validator) {
         $validator->after(function ($validator) {
-            $permission = $this->permissionRepository->findByld($this->route('permission'));
+            $permission = $this->permissionRepository->findById($this->route('permission'));
             if (!$permission) {
                 $validator->errors()->add('permission', 'Permission not found');
             }

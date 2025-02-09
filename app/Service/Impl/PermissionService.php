@@ -19,7 +19,7 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
     }
 
     protected function requestPayload(): array {
-        return ['name', 'publish'];
+        return ['name'];
     }
 
     protected function getSearchField(): array {
@@ -31,7 +31,7 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
     }
 
     protected function getSimpleFilter() : array {
-        return ['publish'];
+        return [];
     }
 
     protected function getComplexFilter(): array{
@@ -67,7 +67,6 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
             foreach ($method as $action) {
                 $payload = [
                     'name' =>"{$model}:{$action}",
-                    'publish' => $request->input('publish')
                 ];
                 if($this->permissionRepo->checkExist('name', $payload['name'])) continue;
                 

@@ -71,7 +71,7 @@ class AuthController extends Controller {
 
     public function refreshToken(RefreshTokenRequest $request) {
         $refreshToken = $this->refreshTokenRepository->findRefreshTokenValid($request->input('refreshToken'));
-        $user = $this->userRepository->findByld($refreshToken->user_id);
+        $user = $this->userRepository->findById($refreshToken->user_id);
         if(!$user){
             return ApiResource::message('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
@@ -84,7 +84,7 @@ class AuthController extends Controller {
         } catch (TokenInvalidException $e) {
             return ApiResource::message('Token Invalid', Response::HTTP_UNAUTHORIZED);
         } catch (JWTException $e) {
-            dd($e);
+            // dd($e);
             return ApiResource::message('Fail to invalidate token', Response::HTTP_UNAUTHORIZED);
         }
 

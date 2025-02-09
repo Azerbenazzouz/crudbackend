@@ -228,9 +228,6 @@ abstract class BaseService implements BaseServiceInterface{
         DB::beginTransaction();
         try {
 
-            if($method == 'update') {
-                $this->validatePermission($request, $id);
-            }
 
             $payload = $this
                 ->setPayload($request)
@@ -276,7 +273,6 @@ abstract class BaseService implements BaseServiceInterface{
     public function delete(Request $request ,int $id) {
         DB::beginTransaction();
         try {      
-            $this->validatePermission($request, $id);
             $this->repository->delete($id);
 
             DB::commit();
@@ -369,15 +365,4 @@ abstract class BaseService implements BaseServiceInterface{
         }
     }
 
-    private function validatePermission(Request $request, $id) {
-        $action = $request->input('actionScope') === 'all';
-
-        if(!$action) {
-            $model = $this->repository->findByld($id);
-            
-            if(!isset($model->user_id) && $model->user_id != $this->auth->user()->id) {
-                throw new AuthorizationException('Permission denied');
-            }
-        }
-    }
 }

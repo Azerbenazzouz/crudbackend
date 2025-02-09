@@ -14,7 +14,6 @@ class StoreRequest extends BaseRequest {
     public function rules(): array {
         return [
             'name' => 'required|regex:/^[a-z]+:[a-zA-Z]+$/|unique:permissions',
-            'publish' => 'required|gt:0'
         ];
     }
 }

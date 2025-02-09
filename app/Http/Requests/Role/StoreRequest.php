@@ -15,8 +15,8 @@ class StoreRequest extends BaseRequest {
     {
         return [
             'name' => 'required|unique:roles,name',
-            // 'permissions' => 'array', // Must be an array
-            // 'permissions.*' => 'required|exists:permissions,id', // Validate each item in the array (roles ID exists in the roles table)
+            'permissions' => 'array', // Must be an array
+            'permissions.*' => 'required|exists:permissions,id', // Validate each item in the array (roles ID exists in the roles table)
         ];
     }
 }

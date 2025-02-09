@@ -25,7 +25,7 @@ class BaseRepositroy {
         return $this->model->where($field, $value)->first();
     }
 
-    public function findByld(int $id,array $relation = []) {
+    public function findById(int $id,array $relation = []) {
         return $this
                 ->model
                 ->where($relation)

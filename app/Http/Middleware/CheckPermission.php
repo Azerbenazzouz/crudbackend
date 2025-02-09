@@ -21,19 +21,15 @@ class CheckPermission {
         [$controllerFull, $actionMethod] = explode('@', $routeAction);
         $controller = class_basename($controllerFull);
         $model = strtolower(str_replace('Controller', '', $controller));
-    
+
         $user = $this->auth->user();
         $permissions = $user->getJWTCustomClaims()['permissions'] ?? [];
-        
         $permissionName = "{$model}:{$actionMethod}";
+
         if (!in_array($permissionName, $permissions)) {
+            // dd('Permission denied');
             return ApiResource::message('Permission denied', HttpResponse::HTTP_FORBIDDEN);
         }
-    
-        $request->merge([
-            'viewScope' => in_array("{$model}:viewAll", $permissions) ? 'all' : 'own',
-            'actionScope' => in_array("{$model}:actionAll", $permissions) ? 'all' : 'own',
-        ]);
     
         return $next($request);
     }

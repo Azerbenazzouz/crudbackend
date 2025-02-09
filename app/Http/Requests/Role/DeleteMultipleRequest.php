@@ -34,7 +34,7 @@ class DeleteMultipleRequest extends BaseRequest {
                     if (!is_numeric($id)) {
                         $validator->errors()->add('role', 'Role id must be numeric');
                     }
-                    $role = $this->roleRepository->findByld($id);
+                    $role = $this->roleRepository->findById($id);
                     if (!$role) {
                         $validator->errors()->add('role', 'Role not found with id: '.$id);
                     }

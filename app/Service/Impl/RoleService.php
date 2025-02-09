@@ -18,7 +18,7 @@ class RoleService extends BaseService implements RoleServiceInterface{
     }
 
     protected function requestPayload(): array {
-        return ['name', 'publish', 'permissions'];
+        return ['name', 'permissions'];
     }
 
     protected function getSearchField(): array {
@@ -30,7 +30,7 @@ class RoleService extends BaseService implements RoleServiceInterface{
     }
 
     protected function getSimpleFilter() : array {
-        return ['publish'];
+        return [];
     }
 
     protected function getComplexFilter(): array{

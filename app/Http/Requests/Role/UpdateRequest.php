@@ -22,14 +22,14 @@ class UpdateRequest extends BaseRequest {
     {
         return [
             'name' => 'string|max:255|min:3',
-            // 'permissions' => 'array|nullable', // Must be an array
-            // 'permissions.*' => 'required|exists:permissions,id', // Validate each item in the array (roles ID exists in the roles table)
+            'permissions' => 'array|nullable', // Must be an array
+            'permissions.*' => 'required|exists:permissions,id', // Validate each item in the array (roles ID exists in the roles table)
         ];
     }
 
     public function withValidator($validator) {
         $validator->after(function ($validator) {
-            $role = $this->roleRepository->findByld($this->route('role'));
+            $role = $this->roleRepository->findById($this->route('role'));
             if (!$role) {
                 $validator->errors()->add('role', 'Role not found');
             }

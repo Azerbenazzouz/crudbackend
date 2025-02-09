@@ -16,10 +16,10 @@ Route::group(['prefix' => 'v1/auth'], function ($router) {
     });
 });
 
-Route::prefix('v1')->middleware(['jwt', 'checkPermission'])->group(function () {
+Route::prefix('v1')->middleware(['jwt','checkPermission'])->group(function () {
     
    /* Roles Route */ 
-   Route::group(['prefix' => 'roles'], function(){
+    Route::group(['prefix' => 'roles'], function(){
         Route::get('all', [RoleController::class, 'all']);
         Route::delete('delete-multiple', [RoleController::class, 'deleteMultiple']);
     });
