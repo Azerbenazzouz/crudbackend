@@ -30,7 +30,7 @@ class AuthController extends Controller {
 
     public function authenticate(AuthRequest $request) {
         $credentials = [
-            'email' => $request->string('email'), 
+            'email' => $request->string('email'),
             'password' => $request->string('password')
         ];
 
@@ -49,7 +49,7 @@ class AuthController extends Controller {
             $resource = ApiResource::ok($this->respondWithToken($token, $refreshTokenPayload), 'SUCCESS', Response::HTTP_OK);
             return response()->json($resource, Response::HTTP_OK);
         }
-        
+
         $resource = ApiResource::message('Unauthorized', Response::HTTP_UNAUTHORIZED);
         return response()->json($resource, Response::HTTP_UNAUTHORIZED);
     }
@@ -65,6 +65,7 @@ class AuthController extends Controller {
 
     public function me() {
         $auth = auth('api')->user();
+        $auth->roles->makeHidden(['created_at', 'updated_at', 'pivot']);
         $resource = ApiResource::ok(['auth' => $auth], 'SUCCESS', Response::HTTP_OK);
         return response()->json($resource, Response::HTTP_OK);
     }
@@ -93,7 +94,7 @@ class AuthController extends Controller {
         if($token) {
             return ApiResource::ok($this->respondWithToken($token, $refreshToken), 'SUCCESS', Response::HTTP_OK);
         }
-        
+
         return ApiResource::message('Server Error...', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
@@ -101,7 +102,7 @@ class AuthController extends Controller {
         try {
             $user = auth('api')->user();
             $this->refreshTokenRepository->deleteByUserId($user->id);
-            
+
             auth('api')->invalidate(true);
             auth('api')->logout();
 
