@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
 use App\Http\Requests\RefreshTokenRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\ApiResource;
 use App\Repositories\RefreshTokenRepositroy;
 use App\Repositories\UserRepository;
@@ -110,5 +111,17 @@ class AuthController extends Controller {
         } catch (\Exception $e) {
             return ApiResource::message('Server Error...', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function register(RegisterRequest $request) {
+        $payload = $request->only(['name', 'email', 'birthday', 'password']);
+
+        $user = $this->userRepository->create($payload);
+        if($user) {
+            
+            return ApiResource::ok($user, 'SUCCESS', Response::HTTP_CREATED);
+        }
+
+        return ApiResource::message('Server Error...', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }
