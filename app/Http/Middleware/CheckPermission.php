@@ -31,6 +31,11 @@ class CheckPermission {
             return ApiResource::message('Permission denied', HttpResponse::HTTP_FORBIDDEN);
         }
 
+        $request->merge([
+            'viewScope' => in_array("{$model}:viewAll", $permissions) ? 'all' : 'own',
+            'actionScope' => in_array("{$model}:actionAll", $permissions) ? 'all' : 'own',
+        ]);
+
         return $next($request);
     }
 }

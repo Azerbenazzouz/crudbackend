@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace App\Service\Impl;
 
 use App\Service\Interfaces\BaseServiceInterface;
@@ -62,7 +62,7 @@ abstract class BaseService implements BaseServiceInterface{
      * exemple : ?created_at=2021-01-01
      */
     abstract protected function getDateFilter(): array;
-    
+
 
     public function __construct($repository){
         $this->repository = $repository;
@@ -228,6 +228,9 @@ abstract class BaseService implements BaseServiceInterface{
         DB::beginTransaction();
         try {
 
+            if($method == 'update') {
+                $this->validatePermission($request, $id);
+            }
 
             $payload = $this
                 ->setPayload($request)
@@ -237,10 +240,10 @@ abstract class BaseService implements BaseServiceInterface{
             $extract = $this->extractManyToManyRelation($payload);
             $payload = $extract['payload'];
             $relationsPayload = $extract['relations'];
-            
+
             $model = $this->repository->save($payload, $id);
             $this->handleManyToManyRelation($model, $relationsPayload);
-    
+
             DB::commit();
             return [
                 'data' => $model,
@@ -272,7 +275,9 @@ abstract class BaseService implements BaseServiceInterface{
      */
     public function delete(Request $request ,int $id) {
         DB::beginTransaction();
-        try {      
+        try {
+
+            $this->validatePermission($request, $id);
             $this->repository->delete($id);
 
             DB::commit();
@@ -305,7 +310,7 @@ abstract class BaseService implements BaseServiceInterface{
      */
     public function deleteMultiple(array $ids) {
         DB::beginTransaction();
-        try {      
+        try {
             $this->repository->deleteWhereIn($ids);
 
             DB::commit();
@@ -362,6 +367,18 @@ abstract class BaseService implements BaseServiceInterface{
         // Sync the many-to-many relationships
         foreach ($relationsPayload as $relation => $relationData) {
             $model->$relation()->sync($relationData);
+        }
+    }
+
+    private function validatePermission(Request $request, $id) {
+        $action = $request->input('actionScope') === 'all';
+
+        if(!$action) {
+            $model = $this->repository->findByld($id);
+
+            if(!isset($model->user_id) && $model->user_id != $this->auth->user()->id) {
+                throw new AuthorizationException('Permission denied');
+            }
         }
     }
 
