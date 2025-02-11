@@ -9,8 +9,8 @@ class RegisterRequest extends BaseRequest {
 
     public function rules(): array {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email',
+            'name' => 'required|string|unique:users,name',
+            'email' => 'required|email|unique:users,email',
             'birthday' => 'required|date',
             'password' => 'required|string',
         ];
