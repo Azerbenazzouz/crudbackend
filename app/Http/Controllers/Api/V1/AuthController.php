@@ -36,8 +36,7 @@ class AuthController extends Controller {
         ];
 
         if (! $token = auth('api')->attempt($credentials)) {
-            $resource = ApiResource::message('Unauthorized', Response::HTTP_UNAUTHORIZED);
-            return response()->json($resource, Response::HTTP_UNAUTHORIZED);
+            return ApiResource::message('Unauthorized', Response::HTTP_UNAUTHORIZED);
         }
         // create Refresh Token
         $refreshTokenPayload = [
@@ -47,12 +46,10 @@ class AuthController extends Controller {
         ];
 
         if($this->refreshTokenService->create($refreshTokenPayload)) {
-            $resource = ApiResource::ok($this->respondWithToken($token, $refreshTokenPayload), 'SUCCESS', Response::HTTP_OK);
-            return response()->json($resource, Response::HTTP_OK);
+            return ApiResource::ok($this->respondWithToken($token, $refreshTokenPayload), 'SUCCESS', Response::HTTP_OK);
         }
 
-        $resource = ApiResource::message('Unauthorized', Response::HTTP_UNAUTHORIZED);
-        return response()->json($resource, Response::HTTP_UNAUTHORIZED);
+        return ApiResource::message('Unauthorized', Response::HTTP_UNAUTHORIZED);
     }
 
     protected function respondWithToken($token, $refreshTokenPayload) {
@@ -67,8 +64,7 @@ class AuthController extends Controller {
     public function me() {
         $auth = auth('api')->user();
         $auth->roles->makeHidden(['created_at', 'updated_at', 'pivot']);
-        $resource = ApiResource::ok(['auth' => $auth], 'SUCCESS', Response::HTTP_OK);
-        return response()->json($resource, Response::HTTP_OK);
+        return ApiResource::ok(['auth' => $auth], 'SUCCESS', Response::HTTP_OK);
     }
 
     public function refreshToken(RefreshTokenRequest $request) {
@@ -86,7 +82,6 @@ class AuthController extends Controller {
         } catch (TokenInvalidException $e) {
             return ApiResource::message('Token Invalid', Response::HTTP_UNAUTHORIZED);
         } catch (JWTException $e) {
-            // dd($e);
             return ApiResource::message('Fail to invalidate token', Response::HTTP_UNAUTHORIZED);
         }
 
@@ -118,7 +113,7 @@ class AuthController extends Controller {
 
         $user = $this->userRepository->create($payload);
         if($user) {
-            
+
             return ApiResource::ok($user, 'SUCCESS', Response::HTTP_CREATED);
         }
 
