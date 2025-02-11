@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserService extends BaseService implements UserServiceInterface {
-    
+
     protected $userRepo;
     protected $payload;
 
@@ -45,7 +45,7 @@ class UserService extends BaseService implements UserServiceInterface {
         if (!$request) {
             return $this;
         }
-        
+
         return $this
             ->calculateAgeFromBirthday();
     }
@@ -56,7 +56,7 @@ class UserService extends BaseService implements UserServiceInterface {
         }
         return $this;
     }
-    
+
     protected function getManyToManyRelationship() : array {
         return ['roles'];
     }

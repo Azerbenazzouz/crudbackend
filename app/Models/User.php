@@ -8,6 +8,7 @@ use App\Traits\Query;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -59,7 +60,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
-    
+
     public function getJWTCustomClaims() {
         $permissions = $this->roles->flatMap(function($role){
             return $role->permissions->pluck('name');
@@ -72,6 +73,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function roles() : BelongsToMany {
         return $this->belongsToMany(Role::class, 'role_user')->withTimestamps();
+    }
+
+    public function products() : HasMany {
+        return $this->hasMany(Product::class);
     }
 
 }

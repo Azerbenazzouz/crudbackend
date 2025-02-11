@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\PermissionController;
+use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -40,5 +41,12 @@ Route::prefix('v1')->middleware(['jwt','checkPermission','cors'])->group(functio
         Route::post('create-module-permission', [PermissionController::class, 'createModulePermission']);
     });
     Route::resource('permissions', PermissionController::class)->except(['create', 'edit']);
+    /* ----------- */
+    /* Permission Route */
+    Route::group(['prefix' => 'products'], function(){
+        Route::get('all', [ProductController::class, 'all']);
+        Route::delete('delete-multiple', [ProductController::class, 'deleteMultiple']);
+    });
+    Route::resource('products', ProductController::class)->except(['create', 'edit']);
     /* ----------- */
 });
