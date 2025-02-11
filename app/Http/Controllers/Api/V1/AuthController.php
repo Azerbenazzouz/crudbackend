@@ -8,9 +8,11 @@ use App\Http\Requests\RefreshTokenRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\ApiResource;
 use App\Repositories\RefreshTokenRepositroy;
+use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
 use App\Service\Impl\RefreshTokenService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -21,11 +23,13 @@ class AuthController extends Controller {
     private $refreshTokenService;
     private $refreshTokenRepository;
     private $userRepository;
+    private $roleRepository;
 
-    public function __construct(RefreshTokenService $refreshTokenService, RefreshTokenRepositroy $refreshTokenRepository, UserRepository $userRepository) {
+    public function __construct(RefreshTokenService $refreshTokenService, RefreshTokenRepositroy $refreshTokenRepository, UserRepository $userRepository, RoleRepository $roleRepository) {
         $this->refreshTokenService = $refreshTokenService;
         $this->refreshTokenRepository = $refreshTokenRepository;
         $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
     }
 
 
@@ -109,14 +113,35 @@ class AuthController extends Controller {
     }
 
     public function register(RegisterRequest $request) {
-        $payload = $request->only(['name', 'email', 'birthday', 'password']);
+        try {
+            $payload = $request->only(['name', 'email', 'birthday']);
+            $payload['password'] = bcrypt($request->password);
 
-        $user = $this->userRepository->create($payload);
-        if($user) {
+            DB::beginTransaction();
 
-            return ApiResource::ok($user, 'SUCCESS', Response::HTTP_CREATED);
+            // Recherche spécifiquement le rôle 'User'
+            $role = $this->roleRepository->findByField("name", "User");
+
+            if (!$role) {
+                // Si le rôle User n'existe pas, on le crée
+                $role = $this->roleRepository->create([
+                    'name' => 'User',
+                    'slug' => 'user'
+                ]);
+            }
+
+            $user = $this->userRepository->create($payload);
+            $this->userRepository->syncRoles($user, [$role->id]);
+            $user->load('roles');
+            $user->roles->makeHidden(['created_at', 'updated_at', 'pivot']);
+
+            DB::commit();
+
+            return ApiResource::ok($user, 'User registered successfully', Response::HTTP_CREATED);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ApiResource::message('Registration failed: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return ApiResource::message('Server Error...', Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

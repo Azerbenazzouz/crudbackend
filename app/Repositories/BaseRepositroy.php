@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories;
 use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\Types\Boolean;
+
 
 class BaseRepositroy {
     private Model $model;
@@ -42,7 +42,7 @@ class BaseRepositroy {
     }
 
     public function deleteWhereIn(array $id = []) {
-        return $this->model->whereIn('id', $id)->delete();        
+        return $this->model->whereIn('id', $id)->delete();
     }
 
     public function show(int $id) {
@@ -63,7 +63,7 @@ class BaseRepositroy {
                 ->complexFilter($specs['filters']['complex'] ?? [])
                 ->dateFilter($specs['filters']['date'] ?? [])
                 ->permissionFilter($specs['scope']?? [])
-                ->when($recordType === 'paginate', 
+                ->when($recordType === 'paginate',
                     fn($q) => $q->paginate($specs['perpage']),
                     fn($q) => $q->get()
                 );

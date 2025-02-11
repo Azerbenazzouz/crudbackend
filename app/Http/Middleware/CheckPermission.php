@@ -27,10 +27,10 @@ class CheckPermission {
         $permissionName = "{$model}:{$actionMethod}";
 
         if (!in_array($permissionName, $permissions)) {
-            // dd('Permission denied');
+            // dd($permissionName, $permissions);
             return ApiResource::message('Permission denied', HttpResponse::HTTP_FORBIDDEN);
         }
-    
+
         return $next($request);
     }
 }
