@@ -139,6 +139,17 @@ abstract class BaseService implements BaseServiceInterface{
      * @return array
      */
     private function specifications(Request $request){
+
+        // Récupérer l'ID de l'utilisateur si nécessaire
+        $userId = $this->getOnlyMine($request);
+
+        $simpleFilters = $this->buildFilter($request, $this->getSimpleFilter());
+
+        // Ajouter le filtre user_id si nécessaire
+        if ($userId) {
+            $simpleFilters['user_id'] = $userId;
+        }
+
         return [
             'keyword' => [
                 'q' => $request->input('keyword'),
@@ -211,7 +222,6 @@ abstract class BaseService implements BaseServiceInterface{
     }
 
     protected function setUserId() {
-        // $id = ;
         $this->payload['user_id'] = $this->auth->user()->id;
         return $this;
     }
@@ -380,6 +390,19 @@ abstract class BaseService implements BaseServiceInterface{
                 throw new AuthorizationException('Permission denied');
             }
         }
+    }
+
+
+    // If in complexfilter list have user_id i need to get only the data with that user_id but if i have viewAll permission i need to get all data
+    protected function getOnlyMine(Request $request) {
+        $user_id = $this->auth->user()->id;
+        $viewScope = $request->input('viewScope');
+        $actionScope = $request->input('actionScope');
+
+        if($viewScope === 'own' && $actionScope === 'own') {
+            return $user_id;
+        }
+        return null;
     }
 
 }
