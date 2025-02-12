@@ -5,6 +5,7 @@ use App\Repositories\ProductRepository;
 use App\Service\Interfaces\ProductServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProductService extends BaseService implements ProductServiceInterface{
 
@@ -43,7 +44,10 @@ class ProductService extends BaseService implements ProductServiceInterface{
 
     protected function processPayload(?Request $request = null) {
         return $this
-            ->generateSlug($this->payload['name'] ?? '');
+            ->generateSlug($this->payload['name'] ?? '')
+            ->setUserId($request)
+            ->uploadImage($request);
+
     }
 
     protected function generateSlug($name) {
@@ -51,6 +55,20 @@ class ProductService extends BaseService implements ProductServiceInterface{
             return $this;
         }
         $this->payload['slug'] = Str::slug($name);
+        return $this;
+    }
+
+    protected function uploadImage(Request $request) {
+        if($request->hasFile('image')) {
+            // upload image
+            // $image = $request->file('image')->store('products', 'public');
+            // $image = Storage::disk('public')->put('products', $request->file('image'));
+            $image = Storage::disk('public')->putFileAs('products',
+                $request->file('image'),
+                Str::uuid().'.'.$request->file('image')->extension()
+            );
+        }
+        $this->payload['image'] = $image ?? '';
         return $this;
     }
 

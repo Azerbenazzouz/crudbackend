@@ -17,7 +17,7 @@ class StoreRequest extends BaseRequest {
             'name' => 'required|unique:products,name',
             'description' => 'required',
             'price' => 'required|numeric',
-            'image' => 'required|image',
+            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
         ];
     }
 }

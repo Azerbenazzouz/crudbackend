@@ -7,15 +7,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class PermissionService extends BaseService implements PermissionServiceInterface{
-    
     protected $permissionRepo;
     protected $payload;
 
     public function __construct(
         PermissionRepository $permissionRepo
     ) {
-        parent::__construct($permissionRepo);    
-        $this->permissionRepo = $permissionRepo;    
+        parent::__construct($permissionRepo);
+        $this->permissionRepo = $permissionRepo;
     }
 
     protected function requestPayload(): array {
@@ -60,7 +59,9 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
                 'update',
                 'destroy',
                 'deleteMultiple',
-                'show'
+                'show',
+                'viewAll',
+                'actionAll'
             ];
             $permissions = [];
 
@@ -69,7 +70,6 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
                     'name' =>"{$model}:{$action}",
                 ];
                 if($this->permissionRepo->checkExist('name', $payload['name'])) continue;
-                
                 $data = $this->permissionRepo->create($payload);
                 $permissions[] = $data;
             }
@@ -89,7 +89,6 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
                 'flag' => false
             ];
         }
-        
 
         return $method;
     }
