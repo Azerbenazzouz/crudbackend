@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\Impl;
 
+use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use App\Service\PromptBuilder;
@@ -25,11 +26,7 @@ class GenerateService {
     public function generateSocialMediaPostDescription(Request $request): string {
         $productId = $request->input('product_id');
         try {
-            $product = $this->productRepository->findById($productId)->first();
-
-            if (!$product) {
-                return 'Product not found';
-            }
+            $product = Product::find($productId);
 
             $additionalInformation = $request->input('additional_information', '');
 
@@ -46,11 +43,7 @@ class GenerateService {
     public function generateProductSEOContent(Request $request): string {
         $productId = $request->input('product_id');
         try {
-            $product = $this->productRepository->findById($productId)->first();
-
-            if (!$product) {
-                return 'Product not found';
-            }
+            $product = Product::find($productId);
 
             $additionalInformation = $request->input('additional_information', '');
 
@@ -67,11 +60,7 @@ class GenerateService {
     public function generateProductDescription(Request $request): string {
         $productId = $request->input('product_id');
         try {
-            $product = $this->productRepository->findById($productId)->first();
-
-            if (!$product) {
-                return 'Product not found';
-            }
+            $product = Product::find($productId);
 
             $additionalInformation = $request->input('additional_information', '');
 
