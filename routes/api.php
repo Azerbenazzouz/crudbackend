@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\GeminiController;
+use App\Http\Controllers\GenerateController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1/auth'], function ($router) {
@@ -48,5 +50,13 @@ Route::prefix('v1')->middleware(['jwt','checkPermission','cors'])->group(functio
         Route::delete('delete-multiple', [ProductController::class, 'deleteMultiple']);
     });
     Route::resource('products', ProductController::class)->except(['create', 'edit']);
+    /* ----------- */
+    /* Generate Route */
+    Route::group(['prefix' => 'generate'], function(){
+        Route::post('/content', [GenerateController::class, 'generateContent']);
+        Route::post('/social-media-post', [GenerateController::class, 'generateSocialMediaPostDescription']);
+        Route::post('/seo-content', [GenerateController::class, 'generateProductSEOContent']);
+        Route::post('/product-description', [GenerateController::class, 'generateProductDescription']);
+    });
     /* ----------- */
 });
