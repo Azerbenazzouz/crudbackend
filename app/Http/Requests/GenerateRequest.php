@@ -10,7 +10,7 @@ class GenerateRequest extends BaseRequest {
     public function rules(): array {
         return [
             'product_id' => 'required|integer|exists:products,id',
-            'additional_information' => 'nullable|string',
+            'additional_information' => 'string',
         ];
     }
 
