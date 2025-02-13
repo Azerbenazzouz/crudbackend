@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GenerateRequest;
+use App\Http\Resources\ApiResource;
 use App\Service\Impl\GenerateService;
 use Illuminate\Http\Request;
 
@@ -14,46 +16,27 @@ class GenerateController extends Controller
         $this->generateService = $generateService;
     }
 
-    public function generateContent(Request $request)
-    {
+    public function generateContent(Request $request) {
         $prompt = $request->input('prompt');
-
         if (!$prompt) {
-            return response()->json(['error' => 'Prompt is required'], 400);
+            return ApiResource::error([],'Prompt is required', 400);
         }
-
         $content = $this->generateService->generateContent($prompt);
-
-        return response()->json(['content' => $content]);
+        return ApiResource::ok(['content' => $content]);
     }
 
-    public function generateSocialMediaPostDescription(Request $request){
-        $productId = $request->input('product_id');
-        $request->input('additional_information', '');
-        if (!$productId) {
-            return response()->json(['error' => 'Product ID is required'], 400);
-        }
+    public function generateSocialMediaPostDescription(GenerateRequest $request){
         $content = $this->generateService->generateSocialMediaPostDescription($request);
-        return response()->json(['content' => $content]);
+        return ApiResource::ok(['content' => $content]);
     }
 
-    public function generateProductSEOContent(Request $request){
-        $productId = $request->input('product_id');
-        $request->input('additional_information', '');
-        if (!$productId) {
-            return response()->json(['error' => 'Product ID is required'], 400);
-        }
+    public function generateProductSEOContent(GenerateRequest $request){
         $content = $this->generateService->generateProductSEOContent($request);
-        return response()->json(['content' => $content]);
+        return ApiResource::ok(['content' => $content]);
     }
 
-    public function generateProductDescription(Request $request){
-        $productId = $request->input('product_id');
-        $request->input('additional_information', '');
-        if (!$productId) {
-            return response()->json(['error' => 'Product ID is required'], 400);
-        }
+    public function generateProductDescription(GenerateRequest $request){
         $content = $this->generateService->generateProductDescription($request);
-        return response()->json(['content' => $content]);
+        return ApiResource::ok(['content' => $content]);
     }
 }
