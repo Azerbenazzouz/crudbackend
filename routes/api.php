@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\GenerateHistoriqueController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\GeminiController;
@@ -59,4 +60,12 @@ Route::prefix('v1')->middleware(['jwt','checkPermission','cors'])->group(functio
         Route::post('/product-description', [GenerateController::class, 'generateProductDescription']);
     });
     /* ----------- */
+
+     /* Generate Historique Route */
+        Route::group(['prefix' => 'generate-historiques'], function(){
+            Route::get('all', [GenerateHistoriqueController::class, 'all']);
+            Route::delete('delete-multiple', [GenerateHistoriqueController::class, 'deleteMultiple']);
+        });
+        Route::resource('generate-historiques', GenerateHistoriqueController::class)->except(['create', 'edit']);
+        /* ----------- */
 });
