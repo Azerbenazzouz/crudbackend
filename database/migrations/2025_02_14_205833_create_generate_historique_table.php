@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('generate_historique', function (Blueprint $table) {
             $table->id();
             $table->string("prompt");
+            $table->string("additional");
             $table->string("response");
             $table->foreignId("user_id")->constrained()->onDelete("cascade");
             $table->foreignId("product_id")->constrained()->onDelete("cascade");
