@@ -60,12 +60,11 @@ Route::prefix('v1')->middleware(['jwt','checkPermission','cors'])->group(functio
         Route::post('/product-description', [GenerateController::class, 'generateProductDescription']);
     });
     /* ----------- */
-
-     /* Generate Historique Route */
-        Route::group(['prefix' => 'generate-historiques'], function(){
-            Route::get('all', [GenerateHistoriqueController::class, 'all']);
-            Route::delete('delete-multiple', [GenerateHistoriqueController::class, 'deleteMultiple']);
-        });
-        Route::resource('generate-historiques', GenerateHistoriqueController::class)->except(['create', 'edit']);
-        /* ----------- */
+    /* Generate Historique Route */
+    Route::group(['prefix' => 'generate-historiques'], function(){
+        Route::get('all', [GenerateHistoriqueController::class, 'all']);
+        Route::delete('delete-multiple', [GenerateHistoriqueController::class, 'deleteMultiple']);
+    });
+    Route::resource('generate-historiques', GenerateHistoriqueController::class)->except(['create', 'edit']);
+    /* ----------- */
 });
